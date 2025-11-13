@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'measurements',
     'variables',
+    'orders',
+    'social_django',
+
 ]
 
 MIDDLEWARE = [
@@ -61,9 +64,11 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+'django.template.context_processors.request',
+'django.contrib.auth.context_processors.auth',
+'django.contrib.messages.context_processors.messages',
+'social_django.context_processors.backends',
+'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -132,4 +137,33 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static', 'media')
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
+)
+
+
+# --- Configuración Auth0 / autenticación externa ---
+
+# Ruta a la que Django redirige cuando un usuario no autenticado entra a una vista con @login_required
+LOGIN_URL = '/login/'
+# A dónde redirigir después de autenticarse correctamente
+LOGIN_REDIRECT_URL = '/orders/'
+# A dónde redirigir tras hacer logout
+LOGOUT_REDIRECT_URL = 'http://localhost:8080'
+
+SOCIAL_AUTH_TRAILING_SLASH = False
+
+# Reemplaza estos valores con los de tu tenant de Auth0
+# Ejemplo de dominio: 'provesiwms.us.auth0.com'
+SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-6112hly81fgj284o.us.auth0.com'
+SOCIAL_AUTH_AUTH0_KEY = '7NRnRUdWlaUmSXoA0IZC2hUKGaZeAEiE'
+SOCIAL_AUTH_AUTH0_SECRET = 'lvsuWpbDSWgDaSm0Rl3uesoC3yJYNDno5335VPnPmwuRGE9ZNsxvPX4GxGeZjxyO'
+
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    'openid',
+    'profile',
+    'email',
+]
+
+AUTHENTICATION_BACKENDS = (
+    'monitoring.auth0backend.Auth0',          # backend personalizado para Auth0
+    'django.contrib.auth.backends.ModelBackend',
 )
